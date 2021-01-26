@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     Button insertData;
     @BindView(R.id.updateData)
     Button updateData;
+    @BindView(R.id.deleteData)
+    Button deleteData;
     private MyDatabaseHelper mDatabaseHelper;
     private SQLiteDatabase db;
     private ContentValues values;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         values = new ContentValues();
     }
 
-    @OnClick({R.id.createBookButton, R.id.insertData, R.id.updateData})
+    @OnClick({R.id.createBookButton, R.id.insertData, R.id.updateData, R.id.deleteData})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.createBookButton:
@@ -65,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
                 values.put("price", 10.99);
                 db.update("Book", values, "name = ?", new String[]{"The Da Vinci Code"});
                 Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.deleteData:
+                db.delete("Book", "pages > ?", new String[] {"500"});
+                Toast.makeText(this, "删除成功", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
