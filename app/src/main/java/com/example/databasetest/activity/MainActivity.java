@@ -1,8 +1,10 @@
 package com.example.databasetest.activity;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -18,7 +20,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private static final String TAG = "MainActivity";
     @BindView(R.id.createBookButton)
     Button createBookButton;
     @BindView(R.id.insertData)
@@ -27,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     Button updateData;
     @BindView(R.id.deleteData)
     Button deleteData;
+    @BindView(R.id.queryData)
+    Button queryData;
     private MyDatabaseHelper mDatabaseHelper;
     private SQLiteDatabase db;
     private ContentValues values;
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         values = new ContentValues();
     }
 
-    @OnClick({R.id.createBookButton, R.id.insertData, R.id.updateData, R.id.deleteData})
+    @OnClick({R.id.createBookButton, R.id.insertData, R.id.updateData, R.id.deleteData, R.id.queryData})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.createBookButton:
@@ -69,8 +73,20 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.deleteData:
-                db.delete("Book", "pages > ?", new String[] {"500"});
+                db.delete("Book", "pages > ?", new String[]{"500"});
                 Toast.makeText(this, "删除成功", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.queryData:
+                Cursor cursor = db.query("Book", null,null,null,null,null,null);
+                if (cursor.moveToFirst()) {
+                    do {
+                        Log.d(TAG, "Book name is " + cursor.getString(cursor.getColumnIndex("name")));
+                        Log.d(TAG, "Book author is " + cursor.getString(cursor.getColumnIndex("author")));
+                        Log.d(TAG, "Book pages is " + cursor.getString(cursor.getColumnIndex("pages")));
+                        Log.d(TAG, "Book price is " + cursor.getString(cursor.getColumnIndex("price")));
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
                 break;
         }
     }
