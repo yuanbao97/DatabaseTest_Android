@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mDatabaseHelper = new MyDatabaseHelper(this, "BookStore.db", null, 3);
+        mDatabaseHelper = new MyDatabaseHelper(this, "BookStore.db", null, 1);
         db = mDatabaseHelper.getWritableDatabase();
         values = new ContentValues();
     }
