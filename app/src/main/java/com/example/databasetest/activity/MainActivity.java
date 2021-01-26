@@ -23,7 +23,11 @@ public class MainActivity extends AppCompatActivity {
     Button createBookButton;
     @BindView(R.id.insertData)
     Button insertData;
+    @BindView(R.id.updateData)
+    Button updateData;
     private MyDatabaseHelper mDatabaseHelper;
+    private SQLiteDatabase db;
+    private ContentValues values;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,17 +35,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mDatabaseHelper = new MyDatabaseHelper(this, "BookStore.db", null, 3);
+        db = mDatabaseHelper.getWritableDatabase();
+        values = new ContentValues();
     }
 
-    @OnClick({R.id.createBookButton, R.id.insertData})
+    @OnClick({R.id.createBookButton, R.id.insertData, R.id.updateData})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.createBookButton:
                 mDatabaseHelper.getWritableDatabase();
                 break;
             case R.id.insertData:
-                SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
+                values.clear();
                 values.put("name", "The Da Vinci Code");
                 values.put("author", "Dan Brown");
                 values.put("pages", 454);
@@ -55,6 +60,13 @@ public class MainActivity extends AppCompatActivity {
                 db.insert("Book", null, values);
                 Toast.makeText(this, "插入成功", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.updateData:
+                values.clear();
+                values.put("price", 10.99);
+                db.update("Book", values, "name = ?", new String[]{"The Da Vinci Code"});
+                Toast.makeText(this, "更新成功", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
+
 }
